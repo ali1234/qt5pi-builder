@@ -1,0 +1,59 @@
+#!/bin/sh -e
+
+BASEDIR=$PWD
+
+# clean old build
+rm -rf $BASEDIR/qt5 $BASEDIR/qt5pi
+
+
+# get compiler
+if [ ! -d $BASEDIR/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf ]; then
+  wget -N https://releases.linaro.org/15.02/components/toolchain/binaries/arm-linux-gnueabihf/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf.tar.xz
+  tar -xf gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf.tar.xz
+fi
+COMPILER=$BASEDIR/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
+
+
+# make a sysroot
+multistrap -d sysroot -f sysroot.config
+./sysroot-relativelinks.py sysroot
+
+
+# build qtcore
+if [ ! -d qtbase ]; then
+    git clone --depth 1 git://code.qt.io/qt/qtbase.git -b 5.7
+fi
+cd qtbase
+git clean -d -f -x
+./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
+-qpa eglfs -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets \
+-device-option CROSS_COMPILE=$COMPILER \
+-sysroot $BASEDIR/sysroot -opensource -confirm-license -make libs \
+-prefix /opt/qt5pi -extprefix $BASEDIR/qt5pi -hostprefix $BASEDIR/qt5 -v
+make -j8
+make install
+cd ..
+
+
+# build qtxmlpatterns
+if [ ! -d qtxmlpatterns ]; then
+    git clone --depth 1 git://code.qt.io/qt/qtxmlpatterns.git -b 5.7
+fi
+cd qtxmlpatterns
+git clean -d -f -x
+$BASEDIR/qt5/bin/qmake
+make -j8
+make install
+cd ..
+
+
+# build qtdeclarative
+if [ ! -d qtdeclarative ]; then
+    git clone --depth 1 git://code.qt.io/qt/qtdeclarative.git -b 5.7
+fi
+cd qtdeclarative
+git clean -d -f -x
+$BASEDIR/qt5/bin/qmake
+make -j8
+make install
+cd ..
