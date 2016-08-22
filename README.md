@@ -1,5 +1,7 @@
 Builds Qt 5 and QtQuick for Raspberry Pi.
 
+This is an automated and repeatable version of https://wiki.qt.io/RaspberryPi2EGLFS
+
 Usage:
 
 * Install dependencies:
