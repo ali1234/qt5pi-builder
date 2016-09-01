@@ -13,6 +13,7 @@ if [ ! -d $BASEDIR/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf ]; then
 fi
 COMPILER=$BASEDIR/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-
 
+MAKE_OPTS="-j16"
 
 # make a sysroot
 multistrap -d sysroot -f sysroot.config
@@ -26,11 +27,11 @@ fi
 cd qtbase
 git clean -d -f -x
 ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
--qpa eglfs -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets \
+-qpa eglfs -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets -no-compile-examples \
 -device-option CROSS_COMPILE=$COMPILER \
 -sysroot $BASEDIR/sysroot -opensource -confirm-license -make libs \
 -prefix /opt/qt5pi -extprefix $BASEDIR/qt5pi -hostprefix $BASEDIR/qt5 -v
-make -j8
+make ${MAKE_OPTS}
 make install
 cd ..
 
@@ -42,7 +43,7 @@ fi
 cd qtxmlpatterns
 git clean -d -f -x
 $BASEDIR/qt5/bin/qmake
-make -j8
+make ${MAKE_OPTS}
 make install
 cd ..
 
@@ -54,6 +55,6 @@ fi
 cd qtdeclarative
 git clean -d -f -x
 $BASEDIR/qt5/bin/qmake
-make -j8
+make ${MAKE_OPTS}
 make install
 cd ..
