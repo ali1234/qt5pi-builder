@@ -16,7 +16,7 @@ COMPILER=$BASEDIR/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf/bin/arm-li
 MAKE_OPTS="-j16"
 
 # make a sysroot
-multistrap -d sysroot -f sysroot.config
+http_proxy=$APT_HTTP_PROXY multistrap -d sysroot -f sysroot.config
 ./sysroot-relativelinks.py sysroot
 
 
