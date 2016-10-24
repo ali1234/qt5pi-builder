@@ -27,7 +27,7 @@ fi
 cd qtbase
 git clean -d -f -x
 ./configure -release -opengl es2 -device linux-rasp-pi2-g++ \
--qpa eglfs -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets -no-compile-examples \
+-qpa eglfs -no-libinput -no-linuxfb -no-xcb -no-kms -no-gbm -no-gtk -no-widgets -no-compile-examples \
 -device-option CROSS_COMPILE=$COMPILER \
 -sysroot $BASEDIR/sysroot -opensource -confirm-license -make libs \
 -prefix /opt/qt5pi -extprefix $BASEDIR/qt5pi -hostprefix $BASEDIR/qt5 -v
